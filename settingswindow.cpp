@@ -1,12 +1,12 @@
 #include "settingswindow.h"
 
 #include <QLabel>
+#include <QThread>
 #include <QMenuBar>
 #include <QComboBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QApplication>
 #include <QSerialPortInfo>
 
 class SettingsWindowPrivate {
@@ -80,6 +80,11 @@ SettingsWindow::SettingsWindow(QMainWindow *parent) : QMainWindow(parent), d_ptr
 
 void SettingsWindow::closeEvent(QCloseEvent *)
 {
+    // Make sure the connection is stopped
+    emit stop();
+    QThread::msleep(50);
+
+    // Emit the quit signal to kill the program
     emit quit();
 }
 
