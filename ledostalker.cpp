@@ -31,7 +31,7 @@ void LEDOSTalker::serial(QString portName)
     d_ptr->serial->setBaudRate(115200);
     d_ptr->serial->open(QSerialPort::WriteOnly);
     QThread::msleep(1000);
-    d_ptr->serial->write("effect activecolor\n");
+    d_ptr->serial->write("effect color\n");
     d_ptr->serial->flush();
 }
 
