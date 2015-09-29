@@ -7,6 +7,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    // This is a hack to prevent some OS to pause executing the program when the window is not visible
     a.setQuitOnLastWindowClosed(false);
 
     // The settings window allows the user to control the program
@@ -24,6 +26,9 @@ int main(int argc, char *argv[])
 
     // And stop it when the user doesn't need it anymore
     QObject::connect( &window, SIGNAL(stop()), &analyzer, SLOT(stop()) );
+
+    // Close the program when the window is closed
+    QObject::connect( &window, SIGNAL(quit()), &a, SLOT(quit()) );
 
     // When a serial port is selected, update it in the LEDOS Talker instance
     QObject::connect( &window, SIGNAL(serial(QString)), &talker, SLOT(serial(QString)) );

@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QApplication>
 #include <QSerialPortInfo>
 
 class SettingsWindowPrivate {
@@ -75,6 +76,11 @@ SettingsWindow::SettingsWindow(QMainWindow *parent) : QMainWindow(parent), d_ptr
     d_ptr->windowsMenu->addAction("Settings", d_ptr->mainWidget, SLOT(show()));
 
     setMenuBar(d_ptr->menuBar);
+}
+
+void SettingsWindow::closeEvent(QCloseEvent *)
+{
+    emit quit();
 }
 
 void SettingsWindow::selectedSerial(int index)

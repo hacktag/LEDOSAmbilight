@@ -12,9 +12,13 @@ class SettingsWindow : public QMainWindow
 public:
     explicit SettingsWindow(QMainWindow *parent = 0);
 
+protected:
+    void closeEvent(QCloseEvent *);
+
 signals:
     void start();
     void stop();
+    void quit();
     void serial(QString);
 
 private slots:
