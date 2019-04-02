@@ -2,9 +2,6 @@
 #define SCREENANALYZER_H
 
 #include <QThread>
-#include <QColor>
-
-class ScreenAnalyzerPrivate;
 
 class ScreenAnalyzer : public QThread
 {
@@ -14,15 +11,6 @@ public:
 
 protected:
     void run();
-
-signals:
-    void color(QColor);
-
-public slots:
-    void stop();
-
-private:
-    ScreenAnalyzerPrivate *d_ptr;
 };
 
 #endif // SCREENANALYZER_H

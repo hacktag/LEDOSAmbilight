@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport
+QT       += core gui websockets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -13,13 +13,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    screenanalyzer.cpp \
-    ledostalker.cpp \
-    settingswindow.cpp
+    screenanalyzer.cpp
 
 HEADERS  += \
-    screenanalyzer.h \
-    ledostalker.h \
-    settingswindow.h
+    screenanalyzer.h
 
 FORMS    +=

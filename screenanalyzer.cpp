@@ -1,37 +1,51 @@
 #include "screenanalyzer.h"
 
 #include <QApplication>
+#include <QWebSocket>
+#include <QEventLoop>
 #include <QScreen>
 #include <QPixmap>
 #include <QDebug>
 #include <QImage>
 #include <QTime>
 
-class ScreenAnalyzerPrivate {
-public:
-    QTime timer;
-};
 
-ScreenAnalyzer::ScreenAnalyzer() : QThread(), d_ptr(new ScreenAnalyzerPrivate)
+ScreenAnalyzer::ScreenAnalyzer()
+    : QThread()
 {
-
+    start();
 }
 
 void ScreenAnalyzer::run()
 {
     setPriority(QThread::HighestPriority);
+
+//    QEventLoop loop;
+    QTime timer;
+
+    QWebSocket *socket = new QWebSocket();
+//    loop.exec();
+//    qRegisterMetaType<QAbstractSocket::SocketState>();
+    socket->open( QUrl( "ws://ledespino.local/ws" ) );
+
+//    socket->
+
+//    QString command = QString("{\"q\":0}");
+//    socket->sendTextMessage( command.toStdString().c_str() );
+
     QScreen *screen = QApplication::primaryScreen();
+
     if (screen) {
-        d_ptr->timer.start();
+        timer.start();
         forever {
             if( QThread::currentThread()->isInterruptionRequested() ) return;
-
-            d_ptr->timer.restart();
+            timer.restart();
 
             QImage image = screen->grabWindow(0).toImage();
 
-            int width = screen->geometry().width();
-            int height = screen->geometry().height();
+            int width = image.width();
+            int height = image.height();
+
 
             int red = 0, green = 0, blue = 0, sample_count = 0;
 
@@ -52,15 +66,17 @@ void ScreenAnalyzer::run()
             red /= sample_count;
             green /= sample_count;
             blue /= sample_count;
+//            qDebug() << red << green << blue;
 
-            emit color( QColor(red, green, blue, 255) );
+            QString command = QString("{\"p\":\"%1%2%3\"}");
+            command = command.arg( red, 2, 16, QChar('0'));
+            command = command.arg( green, 2, 16, QChar('0'));
+            command = command.arg( blue, 2, 16, QChar('0'));
+            qDebug() << command;
+            socket->sendTextMessage( command.toStdString().c_str() );
+            socket->flush();
 
-            msleep( qMax(20 - d_ptr->timer.elapsed(), 0) );
+            msleep( qMax(20 - timer.elapsed(), 0) );
         }
     }
-}
-
-void ScreenAnalyzer::stop()
-{
-    requestInterruption();
 }
